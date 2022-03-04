@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>KCCQ-12 Score</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <style>
+        body {
+            height: 150vh;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 400px;
+        }
+
+        .card-header {
+            font-weight: 600;
+            background-color: #eff8fe;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        #submit-btn {
+            background-color: #0082af;
+            color: #eff8fe;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 400;
+            border-radius: 5px;
+        }
+
+        #submit-btn:hover {
+            opacity: 0.8;
+        }
+
+        #submit-td {
+            padding: 20px;
+        }
+
+        .section {
+            padding: 10px;
+        }
+
+        #taskId {
+            font-size: 12px !important;
+        }
+    </style>
+    <script>
+        var kccqConfig = [{
+            qno: '1a',
+            options: [{
+                value: 'Extremely Limited',
+                score: 1
+            }, {
+                value: 'Quite a bit Limited',
+                score: 2
+            }, {
+                value: 'Moderately Limited',
+                score: 3
+            }, {
+                value: 'Slightly Limited',
+                score: 4
+            }, {
+                value: 'Not at all Limited',
+                score: 5
+            }, {
+                value: 'Limited for other reasons or did not do the activity',
+                score: 6
+            }]
+        }, {
+            qno: '1b',
+            options: [{
+                value: 'Extremely Limited',
+                score: 1
+            }, {
+                value: 'Quite a bit Limited',
+                score: 2
+            }, {
+                value: 'Moderately Limited',
+                score: 3
+            }, {
+                value: 'Slightly Limited',
+                score: 4
+            }, {
+                value: 'Not at all Limited',
+                score: 5
+            }, {
+                value: 'Limited for other reasons or did not do the activity',
+                score: 6
+            }]
+        }, {
+            qno: '1c',
+            options: [{
+                value: 'Extremely Limited',
+                score: 1
+            }, {
+                value: 'Quite a bit Limited',
+                score: 2
+            }, {
+                value: 'Moderately Limited',
+                score: 3
+            }, {
+                value: 'Slightly Limited',
+                score: 4
+            }, {
+                value: 'Not at all Limited',
+                score: 5
+            }, {
+                value: 'Limited for other reasons or did not do the activity',
+                score: 6
+            }]
+        }, {
+            qno: '2',
+            options: [{
+                value: 'Every morning',
+                score: 1
+            }, {
+                value: '3 or more times a week, but not every day',
+                score: 2
+            }, {
+                value: '1-2 times a week',
+                score: 3
+            }, {
+                value: 'Less than once a week',
+                score: 4
+            }, {
+                value: 'Never over the past 2 weeks',
+                score: 5
+            }]
+        },
+        {
+            qno: '3',
+            options: [{
+                value: 'All of the time',
+                score: 1
+            }, {
+                value: 'Several times per day',
+                score: 2
+            }, {
+                value: 'At least once a day',
+                score: 3
+            }, {
+                value: '3 or more times per week but not every day',
+                score: 4
+            }, {
+                value: '1-2 times per week',
+                score: 5
+            },
+            {
+                value: 'Less than once a week',
+                score: 6
+            },
+            {
+                value: 'Never over the past 2 weeks',
+                score: 7
+            }]
+        },
+        {
+            qno: '4',
+            options: [{
+                value: 'All of the time',
+                score: 1
+            }, {
+                value: 'Several times per day',
+                score: 2
+            }, {
+                value: 'At least once a day',
+                score: 3
+            }, {
+                value: '3 or more times per week but not every day',
+                score: 4
+            }, {
+                value: '1-2 times per week',
+                score: 5
+            },
+            {
+                value: 'Less than once a week',
+                score: 6
+            },
+            {
+                value: 'Never over the past 2 weeks',
+                score: 7
+            }]
+        }, {
+            qno: '5',
+            options: [{
+                value: 'Every night',
+                score: 1
+            }, {
+                value: '3 or more times a week, but not every day',
+                score: 2
+            }, {
+                value: '1-2 times a week',
+                score: 3
+            }, {
+                value: 'Less than once a week',
+                score: 4
+            }, {
+                value: 'Never over the past 2 weeks',
+                score: 5
+            }]
+        },
+        {
+            qno: '6',
+            options: [{
+                value: 'It has extremely limited my enjoyment of life',
+                score: 1
+            }, {
+                value: 'It has limited my enjoyment of life quite a bit',
+                score: 2
+            }, {
+                value: 'It has moderately limited my enjoyment of life',
+                score: 3
+            }, {
+                value: 'It has slightly limited my enjoyment of life',
+                score: 4
+            }, {
+                value: 'It has not limited my enjoyment of life at all',
+                score: 5
+            }]
+        },
+        {
+            qno: '7',
+            options: [{
+                value: 'Not at all satisfied',
+                score: 1
+            }, {
+                value: 'Mostly dissatisfied',
+                score: 2
+            }, {
+                value: 'Somewhat satisfied',
+                score: 3
+            }, {
+                value: 'Mostly satisfied',
+                score: 4
+            }, {
+                value: 'Completely satisfied',
+                score: 5
+            }]
+        },
+        {
+            qno: '8a',
+            options: [{
+                value: 'Severely Limited',
+                score: 1
+            }, {
+                value: 'Limited quite a bit',
+                score: 2
+            }, {
+                value: 'Moderately limited',
+                score: 3
+            }, {
+                value: 'Slightly limited',
+                score: 4
+            }, {
+                value: 'Did not limit at all',
+                score: 5
+            },
+            {
+                value: 'Does not apply or did not do for other reasons',
+                score: 6
+            }]
+        },
+        {
+            qno: '8b',
+            options: [{
+                value: 'Severely Limited',
+                score: 1
+            }, {
+                value: 'Limited quite a bit',
+                score: 2
+            }, {
+                value: 'Moderately limited',
+                score: 3
+            }, {
+                value: 'Slightly limited',
+                score: 4
+            }, {
+                value: 'Did not limit at all',
+                score: 5
+            },
+            {
+                value: 'Does not apply or did not do for other reasons',
+                score: 6
+            }]
+        },
+        {
+            qno: '8c',
+            options: [{
+                value: 'Severely Limited',
+                score: 1
+            }, {
+                value: 'Limited quite a bit',
+                score: 2
+            }, {
+                value: 'Moderately limited',
+                score: 3
+            }, {
+                value: 'Slightly limited',
+                score: 4
+            }, {
+                value: 'Did not limit at all',
+                score: 5
+            },
+            {
+                value: 'Does not apply or did not do for other reasons',
+                score: 6
+            }]
+        }];
+
+        let physicalLimitationLookup = ['1a', '1b', '1c'];
+        let symptomFrequencyLookup = [{ q: '2', d: 4 }, { q: '3', d: 6 }, { q: '4', d: 6 }, { q: '5', d: 4 }];
+        let qualityOfLifeLookup = ['6', '7'];
+        let socialLimitationLookup = ['8a', '8b', '8c'];
+
+        async function getArray(score_lookup, lookup) {
+            let arr = [];
+            for (let element of lookup) {
+                if (['1a', '1b', '1c', '8a', '8b', '8c'].includes(element) && score_lookup[element] == 6) {
+                    continue;
+                }
+                arr.push(score_lookup[element]);
+            }
+            return arr;
+        }
+
+        $(document).ready(function () {
+            let results = [];
+            $("#section").hide();
+            $("#response-section").hide();
+
+            $.each(kccqConfig, function (index, questionObj) {
+                var tr = $('<tr class="col-md-12" id="' + questionObj.qno + '-row"><td class="col-md-4 p-2" id="' + questionObj.qno + '-title">' + questionObj.qno + '</td><td class="col-md-8 p-2" id="' + questionObj.qno + '-response"></td></tr>');
+                $("#questionList").append(tr);
+                var select = $('<select class="form-select"></select>').attr("id", questionObj.qno).attr("name", questionObj.qno);
+
+                $.each(questionObj.options, function (index, option) {
+                    select.append($("<option></option>").attr("value", option.score).text(option.value));
+                });
+                $("#" + questionObj.qno + "-response").append(select);
+            });
+
+            $("#questionList").append('<tr class="col-md-12"><td colspan="2" class="text-center" id="submit-td"><button type="submit" id="submit-btn">Calculate Score</button></td></tr>');
+
+
+            $("#list").submit(async function (e) {
+                $("#response").empty();
+                e.preventDefault();
+
+                var form = $(this).serializeArray();
+                var selectedObj = {};
+                $.each(form, function (i, v) {
+                    selectedObj[v.name] = parseInt(v.value);
+                });
+
+                console.log(selectedObj);
+
+                let pl_responses = await getArray(selectedObj, physicalLimitationLookup);
+                let physicalLimitationScore = pl_responses.length > 1 ? (100 * ((_.mean(pl_responses) - 1) / 4)).toFixed(2) : null;
+                // console.log('Physical Limitation Score: ' + physicalLimitationScore);
+                selectedObj['physicalLimitationScore'] = physicalLimitationScore;
+
+                let sf_responses = []
+                for (let element of symptomFrequencyLookup) {
+                    sf_responses.push((selectedObj[element['q']] - 1) / element['d']);
+                }
+                let symptomFrequencyScore = (100 * ((_.mean(sf_responses)))).toFixed(2);
+                // console.log('Symptom Frequency Score: ' + symptomFrequencyScore);
+                selectedObj['symptomFrequencyScore'] = symptomFrequencyScore;
+
+                let qol_responses = await getArray(selectedObj, qualityOfLifeLookup);
+                let qualityOfLifeScore = (100 * ((_.mean(qol_responses) - 1) / 4)).toFixed(2);
+                // console.log('Quality Of Life Score: ' + qualityOfLifeScore);
+                selectedObj['qualityOfLifeScore'] = qualityOfLifeScore;
+
+                let sll_responses = await getArray(selectedObj, socialLimitationLookup);
+                let socialLimitationScore = sll_responses.length > 1 ? (100 * ((_.mean(sll_responses) - 1) / 4)).toFixed(2) : null;
+                // console.log('Social Limitation Score: ' + socialLimitationScore);
+                selectedObj['socialLimitationScore'] = socialLimitationScore;
+
+                let parr = [];
+                parr.push(parseInt(symptomFrequencyScore))
+                parr.push(parseInt(qualityOfLifeScore))
+
+                if (physicalLimitationScore) {
+                    parr.push(parseInt(physicalLimitationScore))
+                }
+
+                if (socialLimitationScore) {
+                    parr.push(parseInt(socialLimitationScore))
+                }
+
+                let overallSummaryScore = _.mean(parr);
+                // console.log('Overall Summary Score: ' + overallSummaryScore.toFixed(2));
+                selectedObj['overallSummaryScore'] = overallSummaryScore.toFixed(2);
+
+                $("#response")
+                    .append('<tr><td class="p-1">Physical Limitation Score</td><td>' + physicalLimitationScore + '</td></tr>')
+                    .append('<tr><td class="p-1">Symptom Frequency Score</td><td>' + symptomFrequencyScore + '</td></tr>')
+                    .append('<tr><td class="p-1">Quality Of Life Score</td><td>' + qualityOfLifeScore + '</td></tr>')
+                    .append('<tr><td class="p-1">Social Limitation Score</td><td>' + socialLimitationScore + '</td></tr>')
+                    .append('<tr><th class="p-1">Overall Summary Score</th><th>' + overallSummaryScore.toFixed(2) + '</th></tr>')
+
+                results.push(selectedObj);
+                console.log(results);
+                $("#section").show();
+            });
+
+
+
+            $("#quest-obj").submit(async function (e) {
+                e.preventDefault();
+
+                var arr = $(this).serializeArray();
+                let taskId = arr.filter(obj => obj.name === "taskId")[0]['value'];
+                let response = JSON.parse(arr.filter(obj => obj.name === "questions")[0]['value']);
+                console.log(response);
+
+                let submittedResult = results[results.length - 1];
+                let req = {};
+                req['questionnaireId'] = response['data']['_id'];
+                req['task'] = taskId;
+                let answers = [];
+                for (let question of response['data']['questions']) {
+                    let questNo = question.label;
+                    let selectedResponse = kccqConfig.filter(config => config.qno === questNo)[0];
+                    let selectedOption = selectedResponse.options.filter(opt => opt.score == submittedResult[questNo])[0]['value'];
+                    answers.push({
+                        id: question._id,
+                        questionNumber: question.questionNumber,
+                        name: question.name,
+                        patient: question.patient,
+                        inputType: question.inputType,
+                        globalCollectionReferenceId: question.globalCollectionReferenceId,
+                        answers: [
+                            selectedOption
+                        ],
+                        "followUps": [
+                            {
+                                "name": selectedOption,
+                                "relatesTo": [],
+                                "reason": null
+                            }
+                        ]
+                    })
+                }
+                req.answers = answers;
+                console.log('resp', req);
+
+                $('#qres').val(JSON.stringify(req));
+                $("#response-section").show();
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="card">
+        <div class="card-header">
+            KCCQ-12 Score
+        </div>
+        <div class="card-body">
+            <form method="post" id="list">
+                <table id="questionList">
+                </table>
+            </form>
+            <hr />
+            <table id="response">
+            </table>
+            <div class="section" id="section">
+                <hr />
+                <form method="post" id="quest-obj">
+                    <div class="row pt-2">
+                        <div class="col-md-4">
+                            <label for="taskId" id="taskId-lbl">Task Id:</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="taskId" name="taskId">
+                        </div>
+                    </div>
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <label for="qid" id="qid">Question object:</label>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-md-12">
+                            <textarea id="question-response" rows="6" name="questions" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="row p-4">
+                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                            <button id="submit-btn" type="submit">Generate Response</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="response-section">
+                    <div class="row pt-1">
+                        <div class="col-md-12">
+                            <label for="qid" id="qid">Request object:</label>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-md-12">
+                            <textarea id="qres" rows="6" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
